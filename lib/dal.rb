@@ -63,5 +63,4 @@ class DAL
 
 end
 
-#module DAL::Cache; end
 #module DAL::Storage; end
