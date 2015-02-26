@@ -14,18 +14,17 @@ class DAL::Strategy::ReadThrough < DAL::Strategy
   end
 
   def load_multi(identifiers:)
-    identifier_to_instance = Hash[cache_layer
-      .load_multi(identifiers: identifiers)
-      .map {|i| [instance_to_identifier(i), i] }
-    ]
-    unloaded_identifers = identifiers.reject {|i| identifier_to_instance.has_key?(i) }
-    unless unloaded_identifers.empty?
-      instances = storage_layer.load_multi(identifiers: unloaded_identifers)
-      cache_layer.save_multi(instances: instances)
-      identifier_to_instance.merge!(Hash[instances.map {|i| [instance_to_identifier(i), i] }])
+
+    cached_instances = cache_layer.load_multi(identifiers: identifiers)
+    uncached_identifers = identifiers - to_ids(cached_instances)
+    stored_instances = []
+
+    unless uncached_identifers.empty?
+      stored_instances = storage_layer.load_multi(identifiers: uncached_identifers)
+      cache_layer.save_multi(instances: stored_instances)
     end
 
-    return identifiers.map {|i| identifier_to_instance[i] }.compact
+    return cached_instances + stored_instances
   end
 
   def delete(instance:)
