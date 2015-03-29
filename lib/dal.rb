@@ -4,8 +4,8 @@ class DAL
   # Helpers
   ##############################
 
-  def instance_to_identifier
-    raise "instance_to_identifier not implement by #{self.class}"
+  def instance_to_identifier(instance)
+    raise ::NotImplementedError, "instance_to_identifier not implemented by #{self.class}"
   end
   alias_method :to_id, :instance_to_identifier
 
@@ -19,11 +19,11 @@ class DAL
   ##############################
 
   def load(identifier:)
-    raise "load not implement by #{self.class}"
+    raise ::NotImplementedError, "load not implemented by #{self.class}"
   end
 
   def load_multi(identifiers:)
-    raise "identifiers class #{identifiers.class} is not a collection" unless instances.responds_to? :each
+    raise ::TypeError, "identifiers class #{identifiers.class} is not a collection" unless instances.responds_to? :each
     identifiers.map {|i| self.load(instance: i) }
   end
 
@@ -40,22 +40,22 @@ class DAL
   ##############################
 
   def delete(instance:)
-    raise "save not implement by #{self.class}"
+    raise ::NotImplementedError, "save not implemented by #{self.class}"
   end
 
   def delete_multi(instances:)
-    raise "identifiers class #{identifiers.class} is not a collection" unless instances.responds_to? :each
+    raise ::TypeError, "identifiers class #{identifiers.class} is not a collection" unless instances.responds_to? :each
     instances.each {|i| delete(instance: i) }
 
     return
   end
 
   def save(instance:)
-    raise "save not implement by #{self.class}"
+    raise ::NotImplementedError, "save not implemented by #{self.class}"
   end
 
   def save_multi(instances:)
-    raise "identifiers class #{identifiers.class} is not a collection" unless instances.responds_to? :each
+    raise ::TypeError, "identifiers class #{identifiers.class} is not a collection" unless instances.responds_to? :each
     instances.each {|i| save(instance: i) }
 
     return
