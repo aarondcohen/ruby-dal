@@ -1,4 +1,4 @@
 require_relative '../dal'
 
-class DAL::Cache < DAL
+class DAL::Adapter < DAL
 end
