@@ -4,35 +4,33 @@ class DAL
   # Helpers
   ##############################
 
-  def instance_to_identifier(instance)
-    raise ::NotImplementedError, "instance_to_identifier not implemented by #{self.class}"
+  def to_identifier(instance)
+    require_implementation!(__method__)
   end
-  alias_method :to_id, :instance_to_identifier
 
-  def instances_to_identifiers(instances)
-    instances.map {|i| self.instance_to_identifier(i) }
+  def to_identifiers(instances)
+    instances.map {|i| self.to_identifier(i) }
   end
-  alias_method :to_ids, :instances_to_identifiers
 
   ##############################
   # Accesors
   ##############################
 
   def load(identifier)
-    raise ::NotImplementedError, "load not implemented by #{self.class}"
+    require_implementation!(__method__)
   end
 
   def load_multi(identifiers)
-    raise ::TypeError, "identifiers class #{identifiers.class} is not a collection" unless instances.responds_to? :each
+    validate_collection!(identifiers)
     identifiers.map {|i| self.load(i) }
   end
 
   def reload(instance)
-    self.load(self.to_id(instance))
+    self.load(self.to_identifier(instance))
   end
 
   def reload_multi(instances)
-    self.load_multi(self.to_ids(instances))
+    self.load_multi(self.to_identifiers(instances))
   end
 
   ##############################
@@ -40,25 +38,40 @@ class DAL
   ##############################
 
   def delete(instance)
-    raise ::NotImplementedError, "delete not implemented by #{self.class}"
+    require_implementation!(__method__)
   end
 
   def delete_multi(instances)
-    raise ::TypeError, "identifiers class #{identifiers.class} is not a collection" unless instances.responds_to? :each
+    validate_collection!(instances)
     instances.each {|i| self.delete(i) }
 
     return
   end
 
   def save(instance)
-    raise ::NotImplementedError, "save not implemented by #{self.class}"
+    require_implementation!(__method__)
   end
 
   def save_multi(instances)
-    raise ::TypeError, "identifiers class #{identifiers.class} is not a collection" unless instances.responds_to? :each
+    validate_collection!(instances)
     instances.each {|i| self.save(i) }
 
     return
+  end
+
+  private
+
+  #TODO: consider introducing new error types
+
+  def require_implementation!(method)
+    raise ::NotImplementedError, "#{method} not implemented by #{self.class}"
+  end
+
+  def validate_collection!(collection)
+    unless collection.responds_to? :each
+      raise ::TypeError, "Given #{collection.class} intead of a collection"
+    end
+
   end
 
 end

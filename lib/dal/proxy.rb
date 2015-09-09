@@ -8,8 +8,8 @@ class DAL::Proxy < DAL
     @proxy = proxy
   end
 
-  def instance_to_identifier(instance)   proxy.instance_to_identifier(instance)    end
-  def instances_to_identifiers(instance) proxy.instances_to_identifiers(instances) end
+  def to_identifier(instance)   proxy.to_identifier(instance)   end
+  def to_identifiers(instances) proxy.to_identifiers(instances) end
 
   def load(identifier)        proxy.load(identifier)        end
   def load_multi(identifiers) proxy.load_multi(identifiers) end

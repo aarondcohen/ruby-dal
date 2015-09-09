@@ -15,7 +15,7 @@ class DAL::Strategy::ReadThrough < DAL::Strategy
 
   def load_multi(identifiers)
     cached_instances = cache_layer.load_multi(identifiers)
-    uncached_identifers = identifiers - to_ids(cached_instances)
+    uncached_identifers = identifiers - to_identifiers(cached_instances)
 
     stored_instances = []
     unless uncached_identifers.empty?

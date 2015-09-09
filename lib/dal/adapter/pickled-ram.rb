@@ -6,25 +6,25 @@ class DAL::Adapter::PickledRAM < DAL::Adapter
     clear
   end
 
-  def load(identifier:)
+  def load(identifier)
     value = @id_to_instance[identifier]
     value ? Marshal.load(value) : nil
   end
 
-  def save(instance:)
-    @id_to_instance[to_id(instance)] = Marshal.dump(instance)
+  def save(instance)
+    @id_to_instance[to_identifier(instance)] = Marshal.dump(instance)
 
     return
   end
 
-  def delete(instance:)
-    @id_to_instance.delete(to_id(instance))
+  def delete(instance)
+    @id_to_instance.delete(to_identifier(instance))
 
     return
   end
 
   def clear
-    @id_to_instance = []
+    @id_to_instance = {}
   end
 
 end
