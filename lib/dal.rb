@@ -9,8 +9,8 @@ class DAL
   end
   alias_method :to_id, :instance_to_identifier
 
-  def instances_to_identifiers(*instances)
-    instances.map {|i| instance_to_identifier(i) }
+  def instances_to_identifiers(instances)
+    instances.map {|i| self.instance_to_identifier(i) }
   end
   alias_method :to_ids, :instances_to_identifiers
 
@@ -18,45 +18,45 @@ class DAL
   # Accesors
   ##############################
 
-  def load(identifier:)
+  def load(identifier)
     raise ::NotImplementedError, "load not implemented by #{self.class}"
   end
 
-  def load_multi(identifiers:)
+  def load_multi(identifiers)
     raise ::TypeError, "identifiers class #{identifiers.class} is not a collection" unless instances.responds_to? :each
-    identifiers.map {|i| self.load(instance: i) }
+    identifiers.map {|i| self.load(i) }
   end
 
-  def reload(instance:)
-    load(identifier: to_id(instance))
+  def reload(instance)
+    self.load(self.to_id(instance))
   end
 
-  def reload_multi(instances:)
-    load_multi(identifiers: to_ids(instances))
+  def reload_multi(instances)
+    self.load_multi(self.to_ids(instances))
   end
 
   ##############################
-  # mutators
+  # Mutators
   ##############################
 
-  def delete(instance:)
-    raise ::NotImplementedError, "save not implemented by #{self.class}"
+  def delete(instance)
+    raise ::NotImplementedError, "delete not implemented by #{self.class}"
   end
 
-  def delete_multi(instances:)
+  def delete_multi(instances)
     raise ::TypeError, "identifiers class #{identifiers.class} is not a collection" unless instances.responds_to? :each
-    instances.each {|i| delete(instance: i) }
+    instances.each {|i| self.delete(i) }
 
     return
   end
 
-  def save(instance:)
+  def save(instance)
     raise ::NotImplementedError, "save not implemented by #{self.class}"
   end
 
-  def save_multi(instances:)
+  def save_multi(instances)
     raise ::TypeError, "identifiers class #{identifiers.class} is not a collection" unless instances.responds_to? :each
-    instances.each {|i| save(instance: i) }
+    instances.each {|i| self.save(i) }
 
     return
   end
