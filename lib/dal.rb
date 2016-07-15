@@ -5,24 +5,34 @@ class DAL
   ##############################
 
   def to_identifier(instance)
-    require_implementation!(__method__)
+    _require_implementation!(__method__)
   end
 
   def to_identifiers(instances)
-    instances.map {|i| self.to_identifier(i) }
+    _validate_collection!(instances)
+
+    instances.map {|instance| to_identifier(instance) }
   end
+
+  def clean(instance) end
+  def validate!(instance) end
 
   ##############################
   # Accesors
   ##############################
 
   def load(identifier)
-    require_implementation!(__method__)
+    instance = _load(identifier)
+    clean(instance) if instance
+    instance
   end
 
   def load_multi(identifiers)
-    validate_collection!(identifiers)
-    identifiers.map {|i| self.load(i) }
+    _validate_collection!(identifiers)
+
+    instances = _load_multi(identifiers)
+    instances.reject(&:nil?).each { |instance| clean(instance) }
+    instances
   end
 
   def reload(instance)
@@ -38,36 +48,78 @@ class DAL
   ##############################
 
   def delete(instance)
-    require_implementation!(__method__)
+    _delete(instance)
+    clean(instance)
   end
 
   def delete_multi(instances)
-    validate_collection!(instances)
-    instances.each {|i| self.delete(i) }
+    _validate_collection!(instances)
+
+    _delete_multi(instances)
+    instances.each { |instance| clean(instance) }
 
     return
   end
 
   def save(instance)
-    require_implementation!(__method__)
+    validate!(instance)
+    _save(instance)
+    clean(instance)
   end
 
   def save_multi(instances)
-    validate_collection!(instances)
-    instances.each {|i| self.save(i) }
+    _validate_collection!(instances)
+
+    instances.each { |instance| validate!(instance) }
+    _save_multi(instances)
+    instances.each { |instance| clean(instance) }
 
     return
   end
+
+  ##############################
+  # Implementation
+  ##############################
+
+  protected
+
+  def _delete(instance)
+    _require_implementation!(__method__)
+  end
+
+  def _delete_multi(instances)
+    instances.each { |instance| _delete(instance) }
+  end
+
+  def _load(identifier)
+    require_implementation!(__method__)
+  end
+
+  def _load_multi(identifiers)
+    identifiers.map { |identifier| _load(identifier) }
+  end
+
+  def _save(instance)
+    _require_implementation!(__method__)
+  end
+
+  def _save_multi(instances)
+    instances.each { |instance| _save(instance) }
+  end
+
+  ##############################
+  # Helpers
+  ##############################
 
   private
 
   #TODO: consider introducing new error types
 
-  def require_implementation!(method)
+  def _require_implementation!(method)
     raise ::NotImplementedError, "#{method} not implemented by #{self.class}"
   end
 
-  def validate_collection!(collection)
+  def _validate_collection!(collection)
     unless collection.responds_to? :each
       raise ::TypeError, "Given #{collection.class} intead of a collection"
     end

@@ -2,37 +2,37 @@ require_relative '../strategy'
 
 class DAL::Strategy::ReadBehind < DAL::Strategy
 
-  def load(identifier)
-    return cache_layer.load(identifier)
+  def _load(identifier)
+    return cache_layer._load(identifier)
   end
 
-  def load_multi(identifiers)
-    return cache_layer.load_multi(identifiers)
+  def _load_multi(identifiers)
+    return cache_layer._load_multi(identifiers)
   end
 
-  def delete(instance)
-    storage_layer.delete(instance)
-    cache_layer.delete(instance)
+  def _delete(instance)
+    storage_layer._delete(instance)
+    cache_layer._delete(instance)
 
     return
   end
 
-  def delete_multi(instances)
-    storage_layer.delete_multi(instances)
-    cache_layer.delete_multi(instances)
+  def _delete_multi(instances)
+    storage_layer._delete_multi(instances)
+    cache_layer._delete_multi(instances)
 
     return
   end
 
-  def save(instance)
-    storage_layer.save(instance)
+  def _save(instance)
+    storage_layer._save(instance)
     #TODO: enqueue write to cache
 
     return
   end
 
-  def save_multi(instances)
-    storage_layer.save_multi(instances)
+  def _save_multi(instances)
+    storage_layer._save_multi(instances)
     #TODO: enqueue writes to cache
 
     return

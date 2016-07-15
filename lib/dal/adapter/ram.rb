@@ -6,15 +6,15 @@ class DAL::Adapter::RAM < DAL::Adapter
     clear
   end
 
-  def load(identifier)
+  def _load(identifier)
     @id_to_instance[identifier]
   end
 
-  def save(instance)
+  def _save(instance)
     @id_to_instance[to_identifier(instance)] = instance
   end
 
-  def delete(instance)
+  def _delete(instance)
     @id_to_instance.delete(to_identifier(instance))
   end
 

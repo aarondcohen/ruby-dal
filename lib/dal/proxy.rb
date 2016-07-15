@@ -11,13 +11,11 @@ class DAL::Proxy < DAL
   def to_identifier(instance)   proxy.to_identifier(instance)   end
   def to_identifiers(instances) proxy.to_identifiers(instances) end
 
-  def load(identifier)        proxy.load(identifier)        end
-  def load_multi(identifiers) proxy.load_multi(identifiers) end
-  def reload(instance)        proxy.reload(instance)        end
-  def reload_multi(instances) proxy.reload_multi(instances) end
-  def delete(instance)        proxy.delete(instance)        end
-  def delete_multi(instances) proxy.delete_multi(instances) end
-  def save(instance)          proxy.save(instance)          end
-  def save_multi(instances)   proxy.save_multi(instances)   end
+  def _load(identifier)        proxy._load(identifier)        end
+  def _load_multi(identifiers) proxy._load_multi(identifiers) end
+  def _delete(instance)        proxy._delete(instance)        end
+  def _delete_multi(instances) proxy._delete_multi(instances) end
+  def _save(instance)          proxy._save(instance)          end
+  def _save_multi(instances)   proxy._save_multi(instances)   end
 
 end
